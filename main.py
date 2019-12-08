@@ -6,6 +6,8 @@ from meine_stadt import MeineStadt, MeineStadtResult
 import socket
 import sentry_sdk
 
+bot = TelegramBot("862350645:AAG9HcakMPX8MF6FWKjKcpFAnjyNRBTmdyo", "206250454")s
+
 
 def get_ip_address():
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -14,6 +16,7 @@ def get_ip_address():
 
 lastVal = MeineStadtResult(None, None, None)
 def notify_meine_stadt_news():
+    global bot
     global lastVal
     meineStadtResult = MeineStadt.receive_meine_stadt_result()
     if lastVal.plain == meineStadtResult.plain:
@@ -24,8 +27,6 @@ def notify_meine_stadt_news():
     channel_id = os.environ["CHANNEL_ID"]
     print("Secret: %s" % telegram_secret)
     print("Channel: %s" % channel_id)
-
-    bot = TelegramBot("862350645:AAG9HcakMPX8MF6FWKjKcpFAnjyNRBTmdyo", "206250454")
 
     try:
         if meineStadtResult.image_url != None:
@@ -43,7 +44,6 @@ def notify_meine_stadt_news():
 
 if __name__ == "__main__":
     hostname = socket.gethostname()
-    bot = TelegramBot("862350645:AAG9HcakMPX8MF6FWKjKcpFAnjyNRBTmdyo", "206250454")
     bot.send_message_html("%s: %s" % (hostname, get_ip_address()))  # '192.168.0.110'))
     sentry_sdk.init("https://7451700f8a6847a4a79603c8f4044972@sentry.io/1849793")
 
