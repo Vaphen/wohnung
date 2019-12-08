@@ -3,6 +3,14 @@ import time
 import os
 from telegrambot import TelegramBot
 from meine_stadt import MeineStadt, MeineStadtResult
+import socket
+import sentry_sdk
+
+
+def get_ip_address():
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    s.connect(("8.8.8.8", 80))
+    return s.getsockname()[0]
 
 lastVal = MeineStadtResult(None, None, None)
 def notify_meine_stadt_news():
@@ -33,8 +41,11 @@ def notify_meine_stadt_news():
 
     lastVal = meineStadtResult
 
-
 if __name__ == "__main__":
+    hostname = socket.gethostname()
+    bot = TelegramBot("862350645:AAG9HcakMPX8MF6FWKjKcpFAnjyNRBTmdyo", "206250454")
+    bot.send_message_html("%s: %s" % (hostname, get_ip_address()))  # '192.168.0.110'))
+    sentry_sdk.init("https://7451700f8a6847a4a79603c8f4044972@sentry.io/1849793")
 
     schedule.every(60).seconds.do(notify_meine_stadt_news)
     while True:
